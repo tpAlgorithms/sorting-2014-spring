@@ -5,25 +5,19 @@
 
 typedef int* iterator_t;
 
-struct less_t {
-  bool operator() (const int& lhs, const int& rhs) const {
-    return lhs > rhs;
-  }
-};
-
+typedef bool (*less_func_t)(const int& a, const int& b);
 
 bool less_func(const int& lhs, const int& rhs) {
   return lhs > rhs;
 }
 
-//(bool)less_func_t(const int& lhs, const int& rhs);
-//typedef less_func_t less_t;
 
 //template <typename less_type>
 //void sort(iterator_t &begin, size_t size, less_type const &less);
 
-template <typename less_type>
-void sort(iterator_t begin, iterator_t end, less_type const &less) {
+//template <typename less_type>
+//typedef less_func_t less_type;
+void sort(iterator_t begin, iterator_t end, less_func_t less) {
   std::sort(begin, end, less);
 }
 
@@ -54,9 +48,8 @@ int main() {
     data.push_back(value);
   }
 
-  less_t less;
-
-  sort<less_t>(&data[0], &data[data.size()], less);
+  
+  sort(&data[0], &data[data.size()], less_func);
 
 
   for (size_t i = 0; i < data.size(); ++i) {
