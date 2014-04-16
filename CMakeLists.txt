@@ -13,3 +13,7 @@ add_executable(hello_world
 add_executable(qsort 
   qsort.cpp  
 )
+
+add_executable(nth_element
+  nth_element.cpp  
+)
