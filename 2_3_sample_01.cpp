@@ -29,14 +29,17 @@ void Heapify(double** mas, int n, int i, const less_t &less)
         int left = 2 * i + 1;
         int right = 2 * i + 2;
         
-        int smallest = right;
-        if (less(mas[left], mas[right])) {
-          smallest = left;
+        if (left >= n) {
+          return; // leaf node
+        }
+
+        int smallest = left;
+        if (right < n and less(mas[left], mas[right])) {
+          smallest = right;
         }
 
         if (less(mas[i], mas[smallest])) {
           std::swap(mas[i], mas[smallest]);
-
           Heapify (mas, n, smallest, less);
         }
 }
@@ -90,16 +93,13 @@ int main()
                         cin>>mas[i][j];
 
         SearchTop(mas, n, x_less_t());
-        less_t less(&(mas[0][0]));
+        less_t less(mas[0]);
         PiramidSort(&mas[1], n-1, less);
 
-        cout<<mas[n-1][0]<<" "<<mas[n-1][1]<<endl;
-        for (int i = 0; i < n-1; i++)
-        {
-                for (int j = 0; j < 2; j++)
-                        cout<<mas[i][j]<<" ";
-                cout<<endl;
+        for (int i = 0; i < n; i++) {
+          cout << mas[i][0] << " " << mas[i][1] << endl;
         }
+
         return 0;
 }
 

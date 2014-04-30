@@ -16,9 +16,12 @@ add_executable(qsort
 
 add_executable(nth_element
   nth_element.cpp  
+)
 
 add_executable(sort_msd
-  sort_msd.cpp)
+  sort_msd.cpp
+)
 
 add_executable(2_3_sample_01
-  2_3_sample_01.cpp)
+  2_3_sample_01.cpp
+)
