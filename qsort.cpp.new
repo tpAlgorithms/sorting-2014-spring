@@ -1,0 +1,97 @@
+#include <vector>
+#include <iostream>
+
+#include <iterator>
+#include <algorithm>
+#include <cmath>
+
+bool less_func(const int& lhs, const int& rhs) {
+  return lhs < rhs;
+  //return ((rhs - lhs) >> 31) & 0x01;
+}
+
+template <class less_t>
+int split(int* a, int size, const less_t &less) {
+  int i = 1;  
+  int j = 1;
+  //begin-------i--------j--------end
+  
+  int &value = a[0];
+
+  for (; j < size ;) {
+    if (! less(value, a[j])) {
+      std::swap(a[i], a[j]);
+      ++i;
+      ++j;
+    } else {
+      ++j;
+    }
+  }
+  std::swap(a[0], a[i - 1]);
+  return i - 1;
+}
+
+struct less_by_value_t {
+  less_by_value_t(int *_data) 
+    :data(_data) {}
+  bool operator()(int lhs, int rhs) {
+    return data[lhs] < data[rhs];
+  }
+  int *data;
+};
+template <class less_t>
+bool qsort(int* begin, int size, const less_t& less, size_t &ttl) {
+//  std::cerr << "qsort: " << size << " - ";
+//  std::copy(begin, begin + size, std::ostream_iterator<int>(std::cerr, " "));
+//  std::cerr << std::endl;
+  if (ttl > size) { ttl -= size; } else { ttl = 0; return false;}
+  if (size < 2) return true;
+/*
+  int tmp[3];
+  tmp[0] = rand() % size; //0;
+  tmp[1] = rand() % size; //size / 2;
+  tmp[2] = rand() % size; //size - 1;
+  std::sort(tmp, &tmp[3], less_by_value_t(begin));
+  std::swap(begin[0], begin[tmp[1]]);
+*/
+//  std::swap(begin[0], begin[rand() % size]);
+  int pivot_pos = split(begin, size, less);
+
+//  std::cerr << pivot_pos << std::endl;
+
+  if(!qsort(begin, pivot_pos, less, ttl)) return false;
+  // qsort(&begin[pivot_pos], 1, less);
+  //qsort(&begin[pivot_pos], size - pivot_pos, less);
+  if(!qsort(&begin[pivot_pos + 1], size - pivot_pos - 1, less, ttl)) return false;
+  
+  return true;
+//  std::cerr << "orted: i" << size << " - ";
+//  std::copy(begin, begin + size, std::ostream_iterator<int>(std::cerr, " "));
+//  std::cerr << "\n";
+}
+
+
+int main() {
+  std::vector<int> data;
+
+//  while (1) {
+  for(;;) {    
+    int value;
+    std::cin >> value;
+
+    if (std::cin.eof()) break;
+    data.push_back(value);
+  }
+
+  size_t ttl = 4 * data.size() * std::log(data.size());
+  if (!qsort(&data[0], data.size(), less_func, ttl)) {
+    std::cerr << "BROKEN!" << std::endl;
+    std::sort(data.begin(), data.end(), less_func);
+  }
+
+  for (size_t i = 0; i < data.size(); ++i) {
+    std::cout << data[i] << std::endl;
+  }
+
+  return 0;
+}
